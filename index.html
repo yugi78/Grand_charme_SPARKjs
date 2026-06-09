@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Château de Villarceaux</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; font-family: system-ui, sans-serif; }
+
+    /* ── Overlay "clic pour jouer" géré par main.js ─────────────────────── */
+
+    /* ── HUD contrôles ──────────────────────────────────────────────────── */
+    #hud {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .hud-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .hud-row   { display: flex; gap: 4px; }
+    .hud-hint  { font-size: 10px; color: rgba(255,255,255,.45); letter-spacing: .05em; text-align: center; }
+
+    .key {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 34px; height: 34px; padding: 0 8px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,.75);
+      transition: background .08s, color .08s, border-color .08s;
+    }
+    .key.wide  { min-width: 68px; }
+    .key.xwide { min-width: 130px; font-size: 11px; gap: 5px; }
+
+    .key.active {
+      background: rgba(239,159,39,.22);
+      border-color: rgba(239,159,39,.7);
+      color: #EF9F27;
+    }
+
+    .hud-sep {
+      font-size: 11px;
+      color: rgba(255,255,255,.3);
+      align-self: center;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-Ty79QG0p.js"></script>
+</head>
+<body>
+
+  <!-- ── HUD Contrôles ──────────────────────────────────────────────── -->
+  <div id="hud">
+
+    <!-- ZQSD -->
+    <div class="hud-group">
+      <div class="hud-row"><div class="key" id="k-z">Z</div></div>
+      <div class="hud-row">
+        <div class="key" id="k-q">Q</div>
+        <div class="key" id="k-s">S</div>
+        <div class="key" id="k-d">D</div>
+      </div>
+      <div class="hud-hint">déplacer</div>
+    </div>
+
+    <!-- Hauteur -->
+    <div class="hud-group">
+      <div class="hud-row">
+        <div class="key xwide" id="k-space">
+          <i class="ti ti-arrow-up" style="font-size:14px;" aria-hidden="true"></i>
+          Espace
+        </div>
+      </div>
+      <div class="hud-row">
+        <div class="key wide" id="k-ctrl">Ctrl</div>
+        <div class="hud-sep">/</div>
+        <div class="key" id="k-c">C</div>
+      </div>
+      <div class="hud-hint">monter / descendre</div>
+    </div>
+
+    <!-- Sprint -->
+    <div class="hud-group">
+      <div class="hud-row">
+        <div class="key wide" id="k-shift">⇧ Shift</div>
+      </div>
+      <div class="hud-hint">sprint</div>
+    </div>
+
+    <!-- Souris -->
+    <div class="hud-group">
+      <div class="hud-row">
+        <div class="key xwide" style="font-size:11px;">
+          <i class="ti ti-mouse" style="font-size:15px;" aria-hidden="true"></i>
+          clic + glisser
+        </div>
+      </div>
+      <div class="hud-hint">orienter la vue</div>
+    </div>
+
+  </div>
+
+  <script>
+    const map = {
+      KeyZ:         'k-z',
+      KeyQ:         'k-q',  KeyA: 'k-q',
+      KeyS:         'k-s',
+      KeyD:         'k-d',
+      Space:        'k-space',
+      ControlLeft:  'k-ctrl', ControlRight: 'k-ctrl',
+      KeyC:         'k-c',
+      ShiftLeft:    'k-shift', ShiftRight: 'k-shift',
+    };
+    function toggle(code, on) {
+      const el = document.getElementById(map[code]);
+      if (el) el.classList.toggle('active', on);
+    }
+    document.addEventListener('keydown', e => toggle(e.code, true));
+    document.addEventListener('keyup',   e => toggle(e.code, false));
+  </script>
+</body>
+</html>
