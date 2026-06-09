@@ -2,65 +2,111 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Château de Villarceaux</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; font-family: system-ui, sans-serif; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background: #000; overflow: hidden; font-family: system-ui, sans-serif; touch-action: none; }
 
-    /* ── Overlay "clic pour jouer" géré par main.js ─────────────────────── */
-
-    /* ── HUD contrôles ──────────────────────────────────────────────────── */
-    #hud {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: flex-end;
-      gap: 20px;
-      z-index: 20;
-      pointer-events: none;
+    /* ── Overlay desktop ──────────────────────────────────────────────────── */
+    #overlay-desktop {
+      display: none;
+      position: fixed; inset: 0;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,.55);
+      color: #fff; font: 600 18px/1 sans-serif;
+      cursor: pointer; z-index: 10; user-select: none;
     }
 
-    .hud-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .hud-row   { display: flex; gap: 4px; }
-    .hud-hint  { font-size: 10px; color: rgba(255,255,255,.45); letter-spacing: .05em; text-align: center; }
-
+    /* ── HUD desktop ──────────────────────────────────────────────────────── */
+    #hud-desktop {
+      display: none;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      align-items: flex-end; gap: 20px;
+      z-index: 20; pointer-events: none;
+      opacity: 0.4; transition: opacity .3s;
+    }
+    .hud-group  { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .hud-row    { display: flex; gap: 4px; }
+    .hud-hint   { font-size: 10px; color: rgba(255,255,255,.45); letter-spacing:.05em; text-align:center; }
     .key {
       display: inline-flex; align-items: center; justify-content: center;
       min-width: 34px; height: 34px; padding: 0 8px;
       background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.18);
-      border-bottom-width: 2px;
+      border: 1px solid rgba(255,255,255,.18); border-bottom-width: 2px;
       border-radius: 6px;
       font-size: 12px; font-weight: 600; color: rgba(255,255,255,.75);
       transition: background .08s, color .08s, border-color .08s;
     }
     .key.wide  { min-width: 68px; }
     .key.xwide { min-width: 130px; font-size: 11px; gap: 5px; }
+    .key.active { background: rgba(239,159,39,.22); border-color: rgba(239,159,39,.7); color: #EF9F27; }
+    .hud-sep { font-size: 11px; color: rgba(255,255,255,.3); align-self: center; }
 
-    .key.active {
-      background: rgba(239,159,39,.22);
-      border-color: rgba(239,159,39,.7);
-      color: #EF9F27;
+    /* ── UI Mobile ────────────────────────────────────────────────────────── */
+    #hud-mobile {
+      display: none;
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 20;
     }
 
-    .hud-sep {
-      font-size: 11px;
-      color: rgba(255,255,255,.3);
-      align-self: center;
+    /* Zone joystick — bas gauche */
+    #joystick-zone {
+      position: absolute;
+      left: 20px; bottom: 20px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.15);
+      pointer-events: all;
     }
+
+    /* Zone swipe — toute la moitié droite */
+    #swipe-zone {
+      position: absolute;
+      right: 0; top: 0;
+      width: 55%; height: 100%;
+      pointer-events: all;
+    }
+    #swipe-hint {
+      position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      color: rgba(255,255,255,.2);
+      font-size: 12px; text-align: center; line-height: 1.6;
+      pointer-events: none;
+    }
+
+    /* Boutons monter / descendre — bas droite */
+    #btn-group {
+      position: absolute;
+      right: 24px; bottom: 24px;
+      display: flex; flex-direction: column; gap: 10px;
+      pointer-events: all;
+    }
+    .btn-vert {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.8); font-size: 22px;
+      cursor: pointer; user-select: none;
+      transition: background .1s;
+      -webkit-user-select: none;
+    }
+    .btn-vert:active { background: rgba(239,159,39,.3); border-color: rgba(239,159,39,.6); color: #EF9F27; }
   </style>
-  <script type="module" crossorigin src="/Grand_charme_SPARKjs/assets/index-Ty79QG0p.js"></script>
+  <script type="module" crossorigin src="/Grand_charme_SPARKjs/assets/index-BlQ62Roz.js"></script>
 </head>
-<body>
+<body>
 
+  <!-- ── Overlay desktop ──────────────────────────────────────────────────── -->
+  <div id="overlay-desktop">Cliquer pour naviguer</div>
 
-  <!-- ── HUD Contrôles ──────────────────────────────────────────────── -->
-  <div id="hud">
-
-    <!-- ZQSD -->
+  <!-- ── HUD desktop ──────────────────────────────────────────────────────── -->
+  <div id="hud-desktop">
     <div class="hud-group">
       <div class="hud-row"><div class="key" id="k-z">Z</div></div>
       <div class="hud-row">
@@ -70,13 +116,10 @@
       </div>
       <div class="hud-hint">déplacer</div>
     </div>
-
-    <!-- Hauteur -->
     <div class="hud-group">
       <div class="hud-row">
         <div class="key xwide" id="k-space">
-          <i class="ti ti-arrow-up" style="font-size:14px;" aria-hidden="true"></i>
-          Espace
+          <i class="ti ti-arrow-up" style="font-size:14px;" aria-hidden="true"></i> Espace
         </div>
       </div>
       <div class="hud-row">
@@ -86,45 +129,69 @@
       </div>
       <div class="hud-hint">monter / descendre</div>
     </div>
-
-    <!-- Sprint -->
     <div class="hud-group">
-      <div class="hud-row">
-        <div class="key wide" id="k-shift">⇧ Shift</div>
-      </div>
+      <div class="hud-row"><div class="key wide" id="k-shift">⇧ Shift</div></div>
       <div class="hud-hint">sprint</div>
     </div>
-
-    <!-- Souris -->
     <div class="hud-group">
       <div class="hud-row">
         <div class="key xwide" style="font-size:11px;">
-          <i class="ti ti-mouse" style="font-size:15px;" aria-hidden="true"></i>
-          clic + glisser
+          <i class="ti ti-mouse" style="font-size:15px;" aria-hidden="true"></i> clic + glisser
         </div>
       </div>
       <div class="hud-hint">orienter la vue</div>
     </div>
-
   </div>
 
+  <!-- ── UI Mobile ────────────────────────────────────────────────────────── -->
+  <div id="hud-mobile">
+    <div id="joystick-zone"></div>
+    <div id="swipe-zone">
+      <div id="swipe-hint">
+        <i class="ti ti-hand-finger" style="font-size:20px; display:block; margin-bottom:4px;"></i>
+        Glisser pour regarder
+      </div>
+    </div>
+    <div id="btn-group">
+      <div class="btn-vert" id="btn-up">
+        <i class="ti ti-arrow-up" aria-hidden="true"></i>
+      </div>
+      <div class="btn-vert" id="btn-down">
+        <i class="ti ti-arrow-down" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- nipplejs via CDN — chargé uniquement si mobile -->
   <script>
-    const map = {
-      KeyZ:         'k-z',
-      KeyQ:         'k-q',  KeyA: 'k-q',
-      KeyS:         'k-s',
-      KeyD:         'k-d',
-      Space:        'k-space',
-      ControlLeft:  'k-ctrl', ControlRight: 'k-ctrl',
-      KeyC:         'k-c',
-      ShiftLeft:    'k-shift', ShiftRight: 'k-shift',
-    };
-    function toggle(code, on) {
-      const el = document.getElementById(map[code]);
-      if (el) el.classList.toggle('active', on);
+    // Affichage conditionnel desktop / mobile
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent)
+      || (navigator.maxTouchPoints > 1);
+
+    if (!isMobile) {
+      document.getElementById("hud-desktop").style.display = "flex";
+
+      // Highlights touches
+      const map = {
+        KeyZ:'k-z', KeyQ:'k-q', KeyA:'k-q',
+        KeyS:'k-s', KeyD:'k-d', Space:'k-space',
+        ControlLeft:'k-ctrl', ControlRight:'k-ctrl',
+        KeyC:'k-c', ShiftLeft:'k-shift', ShiftRight:'k-shift',
+      };
+      window.addEventListener("hud-key", (e) => {
+        const el = document.getElementById(map[e.detail.code]);
+        if (el) el.classList.toggle("active", e.detail.on);
+      });
+
+    } else {
+      // Charger nipplejs puis initialiser le joystick
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/nipplejs@1.0.4/dist/nipplejs.min.js";
+      script.onload = () => {
+        if (window.__initJoystick) window.__initJoystick();
+      };
+      document.head.appendChild(script);
     }
-    document.addEventListener('keydown', e => toggle(e.code, true));
-    document.addEventListener('keyup',   e => toggle(e.code, false));
   </script>
 </body>
 </html>
