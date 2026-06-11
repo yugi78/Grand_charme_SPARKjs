@@ -3,7 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Domaine Du Grand Charme</title>
+  
+  <!-- Titre de la page (affiché sur l'onglet du navigateur) -->
+  <title>Domaine du Grand Charme — Fontenay-Saint-Père</title>
+  
+  <!-- Description standard pour les moteurs de recherche -->
+  <meta name="description" content="Le Domaine du Grand Charme situé aux abords de Fontenay Saint-Père vous propose des appartements à la location dans des logements entièrement rénovés.">
+
+  <!-- ── Balises Open Graph / Facebook / LinkedIn / WhatsApp ───────────────── -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yugi78.github.io/Grand_charme_SPARKjs"> <!-- /!\ Remplace par l'URL de ton site -->
+  <meta property="og:title" content="Domaine du Grand Charme — Logements à louer">
+  <meta property="og:description" content="Le Domaine du Grand Charme situé aux abords de Fontenay Saint-Père vous propose des appartements à la location dans des logements entièrement rénovés.">
+  <meta property="og:image" content="https://yugi78.github.io/Grand_charme_SPARKjs/og-preview.jpg"> <!-- /!\ Remplace par le lien absolu de ton image -->
+
+  <!-- ── Balises Twitter / X ──────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://yugi78.github.io/Grand_charme_SPARKjs"> <!-- /!\ Remplace par l'URL de ton site -->
+  <meta name="twitter:title" content="Domaine du Grand Charme — Fontenay-Saint-Père">
+  <meta name="twitter:description" content="Le Domaine du Grand Charme situé aux abords de Fontenay Saint-Père vous propose des appartements à la location dans des logements entièrement rénovés.">
+  <meta name="twitter:image" content="https://yugi78.github.io/Grand_charme_SPARKjs/og-preview.jpg"> <!-- /!\ Remplace par le lien absolu de ton image -->
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -100,13 +120,10 @@
   </style>
   <script type="module" crossorigin src="/Grand_charme_SPARKjs/assets/index-BHBQhUTW.js"></script>
 </head>
-<body>
-
+<body>
 
   <!-- ── Overlay desktop ──────────────────────────────────────────────────── -->
   <div id="overlay-desktop">Cliquer pour naviguer</div>
-
-  
 
   <!-- ── HUD desktop ──────────────────────────────────────────────────────── -->
   <div id="hud-desktop">
@@ -167,14 +184,12 @@
 
   <!-- nipplejs via CDN — chargé uniquement si mobile -->
   <script>
-    // Affichage conditionnel desktop / mobile
     const isMobile = /Mobi|Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent)
       || (navigator.maxTouchPoints > 1);
 
     if (!isMobile) {
       document.getElementById("hud-desktop").style.display = "flex";
 
-      // Highlights touches
       const map = {
         KeyZ:'k-z', KeyQ:'k-q', KeyA:'k-q',
         KeyS:'k-s', KeyD:'k-d', Space:'k-space',
@@ -187,7 +202,6 @@
       });
 
     } else {
-      // Charger nipplejs puis initialiser le joystick
       const script = document.createElement("script");
       script.src = "https://cdn.jsdelivr.net/npm/nipplejs@1.0.4/dist/nipplejs.min.js";
       script.onload = () => {
